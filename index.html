@@ -32,51 +32,64 @@
             align-items: center;
             min-height: 100vh;
         }
+        .nav-link.active {
+            color: #bef264; /* lime-300 */
+            background-color: rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <!-- Animated Canvas Background -->
     <canvas id="fluid-background-canvas"></canvas>
 
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl content-wrapper">
 
-        <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">Chess Tournament</h1>
             <p class="text-lime-200 mt-2">Hosted by Nalla'sFanClub</p>
-            <p class="text-gray-200 mt-4">Register below to join the tournament.</p>
+            
+            <div id="countdown-container" class="mt-6 bg-black/20 p-4 rounded-xl border border-white/10">
+                <p class="text-sm text-center text-gray-200 mb-3">Registration Closes In:</p>
+                <div id="countdown-timer" class="flex justify-center items-center space-x-2 sm:space-x-3 text-white">
+                    <div class="text-center bg-lime-600/50 backdrop-blur-sm p-3 rounded-lg w-20 sm:w-24"><span id="days" class="text-3xl sm:text-4xl font-bold text-white">00</span><span class="block text-xs text-lime-200 font-semibold">Days</span></div>
+                    <div class="text-center bg-lime-600/50 backdrop-blur-sm p-3 rounded-lg w-20 sm:w-24"><span id="hours" class="text-3xl sm:text-4xl font-bold text-white">00</span><span class="block text-xs text-lime-200 font-semibold">Hours</span></div>
+                    <div class="text-center bg-lime-600/50 backdrop-blur-sm p-3 rounded-lg w-20 sm:w-24"><span id="minutes" class="text-3xl sm:text-4xl font-bold text-white">00</span><span class="block text-xs text-lime-200 font-semibold">Minutes</span></div>
+                    <div class="text-center bg-lime-600/50 backdrop-blur-sm p-3 rounded-lg w-20 sm:w-24"><span id="seconds" class="text-3xl sm:text-4xl font-bold text-white">00</span><span class="block text-xs text-lime-200 font-semibold">Seconds</span></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Registration & Thank You Container -->
-        <div id="form-container" class="bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl border border-white/20 w-full transition-all duration-300">
-            
-            <!-- Registration View -->
-            <div id="registration-view">
-                <h2 class="text-3xl font-bold mb-6 text-center text-white">Registration Form</h2>
-                <form id="registration-form" class="space-y-4">
-                    <div>
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-200">Full Name</label>
-                        <input type="text" id="name" class="transition-colors duration-300 bg-black/30 border border-gray-700 text-white text-sm rounded-lg focus:ring-lime-400 focus:border-lime-400 block w-full p-2.5" placeholder="e.g., Magnus Carlsen" required>
+        <div class="w-full max-w-md mx-auto mb-8 bg-black/20 p-2 rounded-xl border border-white/10 flex justify-center space-x-2">
+            <button class="nav-link w-full p-2 rounded-lg transition-colors duration-300" data-page="registration-section">Register</button>
+            <button class="nav-link w-full p-2 rounded-lg transition-colors duration-300" data-page="players-section">Registered Players</button>
+        </div>
+
+        <div id="main-content" class="w-full">
+            <div id="registration-section" class="page">
+                <div id="form-container" class="bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl border border-white/20 w-full max-w-2xl mx-auto transition-all duration-300">
+                    <div id="registration-view">
+                        <h2 class="text-3xl font-bold mb-6 text-center text-white">Registration Form</h2>
+                        <form id="registration-form" class="space-y-4">
+                            <div><label for="name" class="block mb-2 text-sm font-medium text-gray-200">Full Name</label><input type="text" id="name" class="transition-colors duration-300 bg-black/30 border border-gray-700 text-white text-sm rounded-lg focus:ring-lime-400 focus:border-lime-400 block w-full p-2.5" placeholder="e.g., Magnus Carlsen" required></div>
+                            <div><label for="age" class="block mb-2 text-sm font-medium text-gray-200">Age</label><input type="number" id="age" class="transition-colors duration-300 bg-black/30 border border-gray-700 text-white text-sm rounded-lg focus:ring-lime-400 focus:border-lime-400 block w-full p-2.5" placeholder="e.g., 33" required></div>
+                            <div id="error-message" class="text-red-400 text-sm pt-1 text-center h-5 font-semibold"></div>
+                            <button id="submit-button" type="submit" class="w-full text-gray-900 bg-lime-300 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-500 font-bold rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">Register</button>
+                        </form>
                     </div>
-                    <div>
-                        <label for="age" class="block mb-2 text-sm font-medium text-gray-200">Age</label>
-                        <input type="number" id="age" class="transition-colors duration-300 bg-black/30 border border-gray-700 text-white text-sm rounded-lg focus:ring-lime-400 focus:border-lime-400 block w-full p-2.5" placeholder="e.g., 33" required>
+                    <div id="thank-you-view" class="hidden text-center"><h2 class="text-3xl font-bold text-lime-300">Thank You!</h2><p class="text-white my-6">Your registration is complete.</p><button id="register-another-btn" class="w-full text-gray-900 bg-lime-300 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-500 font-bold rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300">Register Another Person</button></div>
+                    <div id="registration-closed-view" class="hidden text-center">
+                        <h2 class="text-3xl font-bold text-red-400">Registration Closed</h2>
+                        <p class="text-gray-300 mt-4">The deadline to register has passed. Thank you for your interest!</p>
                     </div>
-                    <div id="error-message" class="text-red-400 text-sm pt-1 text-center h-5 font-semibold"></div>
-                    <button id="submit-button" type="submit" class="w-full text-gray-900 bg-lime-300 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-500 font-bold rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Register
-                    </button>
-                </form>
+                </div>
             </div>
-            
-            <!-- Thank You View (Initially Hidden) -->
-            <div id="thank-you-view" class="hidden text-center">
-                <h2 class="text-3xl font-bold text-lime-300">Thank You!</h2>
-                <p class="text-white my-6">Your registration is complete.</p>
-                <button id="register-another-btn" class="w-full text-gray-900 bg-lime-300 hover:bg-lime-400 focus:ring-4 focus:outline-none focus:ring-lime-500 font-bold rounded-lg text-sm px-5 py-3 text-center transition-colors duration-300">
-                    Register Another Person
-                </button>
+
+            <div id="players-section" class="page hidden">
+                <div class="bg-black/40 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl border border-white/20 w-full max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-6 text-center text-white">Registered Players</h2>
+                    <div id="players-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                        </div>
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +98,7 @@
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Fluid Background Animation ---
         const canvas = document.getElementById('fluid-background-canvas');
@@ -93,17 +106,11 @@
         let time = 0;
         const gridSize = 80;
         const distortion = 15;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         function drawFluidGrid() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const cols = Math.ceil(canvas.width / gridSize) + 1;
             const rows = Math.ceil(canvas.height / gridSize) + 1;
-
             for (let y = 0; y < rows; y++) {
                 for (let x = 0; x < cols; x++) {
                     const offX = Math.sin(time + x * 0.3 + y * 0.2) * distortion;
@@ -113,20 +120,12 @@
                 }
             }
         }
-
-        function animate() {
-            time += 0.01;
-            drawFluidGrid();
-            requestAnimationFrame(animate);
-        }
-
+        function animate() { time += 0.01; drawFluidGrid(); requestAnimationFrame(animate); }
         window.addEventListener('resize', resizeCanvas);
-        // Start animation on window load
         window.onload = () => {
             resizeCanvas();
             animate();
         };
-
 
         // --- 1. Firebase Configuration ---
         const firebaseConfig = {
@@ -144,93 +143,137 @@
         const db = getFirestore(app);
 
         // --- 2. DOM Element References ---
-        const registrationView = document.getElementById('registration-view');
-        const thankYouView = document.getElementById('thank-you-view');
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
         const registrationForm = document.getElementById('registration-form');
-        const errorMessageDiv = document.getElementById('error-message');
-        const registerAnotherBtn = document.getElementById('register-another-btn');
+        const thankYouView = document.getElementById('thank-you-view');
+        const registrationView = document.getElementById('registration-view');
+        const registrationClosedView = document.getElementById('registration-closed-view');
         const submitButton = document.getElementById('submit-button');
-        const formContainer = document.getElementById('form-container');
-
+        const registerAnotherBtn = document.getElementById('register-another-btn');
+        const errorMessageDiv = document.getElementById('error-message');
+        const countdownContainer = document.getElementById('countdown-container');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const playersList = document.getElementById('players-list');
+        
         // --- 3. Firestore Collection Reference ---
         const registrationsCollectionRef = collection(db, 'registrations');
         
-        // --- 4. Page Switching Logic ---
-        function showView(viewId) {
-            if (viewId === 'registration-view') {
-                registrationView.classList.remove('hidden');
-                thankYouView.classList.add('hidden');
-            } else if (viewId === 'thank-you-view') {
-                registrationView.classList.add('hidden');
-                thankYouView.classList.remove('hidden');
-            }
+        // --- 4. View Switching Logic ---
+        function showPage(pageId) {
+            pages.forEach(page => {
+                if(page.id === pageId) {
+                    page.classList.remove('hidden');
+                } else {
+                    page.classList.add('hidden');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
         }
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => showPage(link.dataset.page));
+        });
 
         // --- 5. Authentication ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("Authenticated anonymously. User ID:", user.uid);
+                console.log("Authenticated anonymously.");
+                listenForRegistrations();
             } else {
-                try {
-                    await signInAnonymously(auth);
-                } catch (error) {
-                    console.error("Authentication Error:", error);
-                    errorMessageDiv.textContent = "Error connecting to service.";
-                }
+                signInAnonymously(auth).catch(err => console.error("Auth Error:", err));
             }
         });
-
-        // --- 6. Form Submission Logic ---
+        
+        // --- 6. Registration Form Logic ---
         registrationForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Reset visual state from previous errors
             errorMessageDiv.textContent = '';
-            formContainer.classList.remove('border-red-500');
-            formContainer.classList.add('border-white/20');
-
-            // Disable button and show loading state
             submitButton.disabled = true;
             submitButton.textContent = 'Submitting...';
-
-            const name = document.getElementById('name').value.trim();
-            const age = document.getElementById('age').value;
-
-            if (!name || !age) {
-                errorMessageDiv.textContent = 'Please fill out all fields.';
+            try {
+                await addDoc(registrationsCollectionRef, {
+                    name: document.getElementById('name').value.trim(),
+                    age: Number(document.getElementById('age').value),
+                    registeredAt: new Date()
+                });
+                registrationForm.reset();
+                registrationView.classList.add('hidden');
+                thankYouView.classList.remove('hidden');
+            } catch (error) {
+                console.error("Registration Error:", error);
+                errorMessageDiv.textContent = "Registration failed. Please try again.";
+            } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Register';
+            }
+        });
+        
+        registerAnotherBtn.addEventListener('click', () => {
+             thankYouView.classList.add('hidden');
+             registrationView.classList.remove('hidden');
+        });
+
+        // --- 7. Countdown Timer Logic ---
+        const deadline = new Date('2025-07-18T23:59:59').getTime();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = deadline - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdownContainer.classList.add('hidden');
+                registrationView.classList.add('hidden');
+                thankYouView.classList.add('hidden');
+                registrationClosedView.classList.remove('hidden');
                 return;
             }
 
-            try {
-                // Save data to Firestore
-                await addDoc(registrationsCollectionRef, {
-                    name: name,
-                    age: Number(age),
-                    registeredAt: new Date()
-                });
-                
-                // Reset the form and show the thank you page
-                registrationForm.reset();
-                showView('thank-you-view');
-                
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                errorMessageDiv.textContent = 'Registration failed. Check permissions.';
-                formContainer.classList.add('border-red-500'); // Make error visible
-                formContainer.classList.remove('border-white/20');
-            } finally {
-                // Re-enable the button regardless of success or failure
-                submitButton.disabled = false;
-                submitButton.textContent = 'Register';
-            }
-        });
+            daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+        }
+        updateCountdown();
 
-        // --- 7. "Register Another" Button ---
-        registerAnotherBtn.addEventListener('click', () => {
-            showView('registration-view');
-        });
+        // --- 8. Real-time Player List Logic ---
+        function listenForRegistrations() {
+            const q = query(registrationsCollectionRef, orderBy('registeredAt', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                playersList.innerHTML = '';
+                if (snapshot.empty) {
+                    playersList.innerHTML = '<p class="text-gray-400 text-center">No players have registered yet.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const registration = doc.data();
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'bg-black/20 p-3 rounded-lg flex justify-between items-center border border-white/10';
+                    playerDiv.innerHTML = `
+                        <span class="font-semibold text-white">${escapeHTML(registration.name)}</span>
+                        <span class="text-sm text-lime-300">Age: ${escapeHTML(String(registration.age))}</span>
+                    `;
+                    playersList.appendChild(playerDiv);
+                });
+            }, (error) => {
+                console.error("Error fetching registrations:", error);
+                playersList.innerHTML = '<p class="text-red-500 text-center">Could not load player list.</p>';
+            });
+        }
+
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(String(str)));
+            return p.innerHTML;
+        }
+
+        // --- Initial Setup ---
+        showPage('registration-section');
 
     </script>
 </body>
